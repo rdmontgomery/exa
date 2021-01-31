@@ -169,6 +169,12 @@ class Data(exa.Base):
             df = pd.read_parquet(qet)
         return cls(df=df, **yml)
 
+    def read_csv(self, *args, **kws):
+        """Convenience method for pandas read_csv"""
+        self.source = pd.read_csv
+        self._data = self.source(*args, **kws)
+        return self._data
+
     def load(self, name=None, directory=None, tarbuffer=False):
         """Load a saved Data from its stored metadata yaml
         and parquet data file."""
