@@ -169,12 +169,6 @@ class Data(exa.Base):
             df = pd.read_parquet(qet)
         return cls(df=df, **yml)
 
-    def read_csv(self, *args, **kws):
-        """Convenience method for pandas read_csv"""
-        self.source = pd.read_csv
-        self._data = self.source(*args, **kws)
-        return self._data
-
     def load(self, name=None, directory=None, tarbuffer=False):
         """Load a saved Data from its stored metadata yaml
         and parquet data file."""
@@ -234,11 +228,13 @@ class Data(exa.Base):
                 )
         return df
 
-    def __init__(self, *args, df=None, **kws):
+    def __init__(self, *args, source=pd.read_csv, df=None, **kws):
         super().__init__(*args, **kws)
         # setting source invalidates _data so do it after
         if df is not None:
             self.data(df=df)
+        self.source = source
+        self.call_args = args
 
 
 def load_isotopes():
